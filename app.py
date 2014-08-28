@@ -45,6 +45,9 @@ def hook(request):
     return HttpResponse('Powered by Django')
 
 def get_general_info(responses):
+    """
+    Get general survey response data, like the participant ID and phone number
+    """
     r = responses[0]
     return {
         'private_participant_phone': r['from'],
@@ -53,6 +56,9 @@ def get_general_info(responses):
     }
 
 def get_question_answers(responses, config):
+    """
+    Map the Textizen question responses to their Shareabouts attributes
+    """
     data = {}
     for response in responses:
         question_id = response['question_id']
@@ -69,20 +75,37 @@ def get_question_answers(responses, config):
     return data
 
 def find_survey_place(survey_data, config):
+    """
+    Look up the surveyed place from the Shareabouts dataset
+    """
     lookup_field = config['place_lookup']
     lookup_value = survey_data[lookup_field]
-    # TODO: Config below
-    response = requests.get('https://data.shareabouts.org/api/v2/motu/datasets/bikeshare/places?%s=%s' % (lookup_field, lookup_value))
-    places = response.json()
 
+    retries = 5
+    while retries > 0:
+        # TODO: Config below
+        response = requests.get(
+            'https://data.shareabouts.org/api/v2/motu/datasets/bikeshare/places?%s=%s' % (lookup_field, lookup_value))
+        if response.status_code == 200:
+            break
+        retries -= 1
+
+    if response.status_code != 200:
+        # Setting these values for access in stack trace
+        status_code = response.status_code
+        response_body = response.content
+        raise Exception('Too many retries while trying to find survey place')
+
+    places = response.json()
     # If we have more than one place, we should panic
     assert(len(places['features']) == 1)
-
     return places['features'][0]
 
 def submit_survey(place, survey_data, config):
+    """
+    Submit a new survey for the place
+    """
     retries = 5
-
     while retries > 0:
         # TODO: Config below
         response = requests.post(
