@@ -1,0 +1,20 @@
+{
+	"question_attrs": {
+		"841": "submitter_race",
+		"842": "submitter_age",
+		"843": "comments",
+		"844": "why_good",
+		"845": "submitter_gender",
+		"846": "good_spot",
+		"847": "user_token",
+		"848": "safety",
+		"849": "why_bad",
+		"850": "medallion_number"
+	},
+	"option_values": {
+		"1001": "yes",
+		"1002": "no",
+		"1003": "white"
+	},
+	"place_lookup": "medallion_number"
+}
