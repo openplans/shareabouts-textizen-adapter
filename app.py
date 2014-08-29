@@ -93,9 +93,13 @@ def find_survey_place(survey_data, config):
 
     retries = 5
     while retries > 0:
-        # TODO: Config below
+        dataset_root = (
+            config.get('dataset_root') or
+            os.environ['SHAREABOUTS_DATASET_ROOT']
+        ).strip('/')
+
         response = requests.get(
-            'https://data.shareabouts.org/api/v2/motu/datasets/bikeshare/places?%s=%s' % (lookup_field, lookup_value))
+            '%s/places?%s=%s' % (dataset_root, lookup_field, lookup_value))
         if response.status_code == 200:
             break
         retries -= 1
@@ -117,9 +121,10 @@ def submit_survey(place, survey_data, config):
     """
     retries = 5
     while retries > 0:
-        # TODO: Config below
         response = requests.post(
-            place['properties']['url'] + '/surveys',
+            place['properties']['url'] + '/' + (
+                config.get('submission_set_name') or
+                os.environ['SHAREABOUTS_SUBMISSION_SET_NAME']),
             data=json.dumps(survey_data),
             headers={
                 'Content-type': 'application/json',

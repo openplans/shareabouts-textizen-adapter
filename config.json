@@ -16,5 +16,7 @@
 		"1002": "no",
 		"1003": "white"
 	},
-	"place_lookup": "medallion_number"
+	"place_lookup": "medallion_number",
+	"submission_set_name": "surveys",
+	"dataset_root": "https://data.shareabouts.org/api/v2/motu/datasets/bikesharephilly"
 }
