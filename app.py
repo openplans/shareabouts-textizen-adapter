@@ -73,7 +73,7 @@ def get_question_answers(poll, responses, config):
     Map the Textizen question responses to their Shareabouts attributes
     """
     data = {}
-    questions = poll['open_questions']
+    questions = [obj['open_question'] for obj in poll['open_questions']]
     question_attrs = config.get('question_attrs', {})
     option_values = config.get('option_values', {})
 
