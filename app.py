@@ -32,11 +32,8 @@ def hook(request):
             'Please POST a valid Textizen POST hood payload.',
             status=405)
 
-    # Copy the POST parameter to a dict, for easier debugging
-    request_params = request.POST.dict()
-
     # Only capture poll.copleted events; ignore everything else
-    if request_params.get('event', None) != 'poll.completed':
+    if request.POST.get('event', None) != 'poll.completed':
         return HttpResponse('', status=204)
 
     # Load the textizen->shareabouts mapping config
@@ -45,7 +42,7 @@ def hook(request):
 
     # Load the textizen response data from the request body
     # NOTE: We may end up with a KeyError, but Sentry will catch it.
-    textizen_responses = json.loads(request_params['responses'])
+    textizen_responses = json.loads(request.POST['responses'])
 
     survey_data = {}
     survey_data.update(get_general_info(textizen_responses))
