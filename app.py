@@ -65,7 +65,7 @@ def get_general_info(responses):
         'private_participant_phone': r['from'],
         'participant_id': r['participant_id'],
         'private_survey_phone': r['to'],
-        'user_token': 'textizen:' + r['participant_id']
+        'user_token': 'textizen:%s' % (r['participant_id'],)
     }
 
 def get_question_answers(poll, responses, config):
