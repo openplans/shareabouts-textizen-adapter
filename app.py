@@ -9,6 +9,7 @@ from django.conf import settings
 from django.conf.urls import patterns
 from django.http import HttpResponse
 from django.core.management import execute_from_command_line
+from django.utils.text import slugify
 
 # Project configuration
 settings.configure(
@@ -43,10 +44,11 @@ def hook(request):
     # Load the textizen response data from the request body
     # NOTE: We may end up with a KeyError, but Sentry will catch it.
     textizen_responses = json.loads(request.POST['responses'])
+    textizen_poll = json.loads(request.POST['poll'])
 
     survey_data = {'source': 'textizen'}
     survey_data.update(get_general_info(textizen_responses))
-    survey_data.update(get_question_answers(textizen_responses, config))
+    survey_data.update(get_question_answers(textizen_poll, textizen_responses, config))
 
     # Send the survey response to Shareabouts
     place = find_survey_place(survey_data, config)
@@ -62,23 +64,37 @@ def get_general_info(responses):
     return {
         'private_participant_phone': r['from'],
         'participant_id': r['participant_id'],
-        'private_survey_phone': r['to']
+        'private_survey_phone': r['to'],
+        'user_token': 'textizen:' + r['participant_id']
     }
 
-def get_question_answers(responses, config):
+def get_question_answers(poll, responses, config):
     """
     Map the Textizen question responses to their Shareabouts attributes
     """
     data = {}
+    questions = poll['open_questions']
+    question_attrs = config.get('question_attrs', {})
+    option_values = config.get('option_values', {})
+
     for response in responses:
         question_id = response['question_id']
         option_id = response['matching_option_id']
 
         # NOTE: These may raise a KeyError, but Sentry will catch it.
-        attr = config['question_attrs'][question_id]
+        attr = question_attrs[str(question_id)]
         if option_id:
-            value = config['option_values'][option_id]
+            # If we override the option mapping in the config, use that
+            if str(option_id) in option_values:
+                value = option_values[str(option_id)]
+
+            # Otherwise slugify the option text from the textizen poll
+            else:
+                question = [q for q in questions if q['id'] == question_id][0]
+                option = [o for o in question['options'] if o['id'] == option_id][0]
+                value = slugify(option['text'])
         else:
+            # For free-response, use the whole response
             value = response['response']
 
         data[attr] = value
