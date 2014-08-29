@@ -111,7 +111,7 @@ def find_survey_place(survey_data, config):
     lookup_field = config['place_lookup']
     lookup_value = survey_data[lookup_field]
 
-    retries = 5
+    retries = 2
     while retries > 0:
         dataset_root = (
             config.get('dataset_root') or
@@ -139,7 +139,7 @@ def submit_survey(place, survey_data, config):
     """
     Submit a new survey for the place
     """
-    retries = 5
+    retries = 2
     while retries > 0:
         response = requests.post(
             place['properties']['url'] + '/' + (
