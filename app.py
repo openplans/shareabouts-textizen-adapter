@@ -15,24 +15,37 @@ settings.configure(
     DEBUG=(os.environ.get('DEBUG', 'True').lower() not in ('false', 'off')),
     SECRET_KEY=os.environ.get('SECRET_KEY', 'random_secret_key'),
     ACCESS_TOKEN=os.environ.get('ACCESS_TOKEN'),
+    RAVEN_CONFIG={'dsn': os.environ.get('SENTRY_DSN')},
 
     ROOT_URLCONF=sys.modules[__name__],
     ALLOWED_HOSTS=['*'],
+    INSTALLED_APPS=('raven.contrib.django.raven_compat',)
 )
 
+from django.views.decorators.csrf import csrf_exempt
+
 # Textizen POST hook
+@csrf_exempt
 def hook(request):
-    # Only capture poll.copleted events
-    if request.POST.get('event', None) != 'poll.completed':
+    if request.method != 'POST':
+        return HttpResponse(
+            'Please POST a valid Textizen POST hood payload.',
+            status=405)
+
+    # Copy the POST parameter to a dict, for easier debugging
+    request_params = request.POST.dict()
+
+    # Only capture poll.copleted events; ignore everything else
+    if request_params.get('event', None) != 'poll.completed':
         return HttpResponse('', status=204)
 
-    # Load the textizen mapping config
+    # Load the textizen->shareabouts mapping config
     with open('config.json') as configfile:
         config = json.load(configfile)
 
-    # Load the data from the request body
+    # Load the textizen response data from the request body
     # NOTE: We may end up with a KeyError, but Sentry will catch it.
-    textizen_responses = json.loads(request.POST['responses'])
+    textizen_responses = json.loads(request_params['responses'])
 
     survey_data = {}
     survey_data.update(get_general_info(textizen_responses))
