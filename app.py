@@ -73,7 +73,7 @@ def get_question_answers(poll, responses, config):
     Map the Textizen question responses to their Shareabouts attributes
     """
     data = {}
-    questions = [obj['open_question'] for obj in poll['open_questions']]
+    questions = poll['open_questions']
     question_attrs = config.get('question_attrs', {})
     option_values = config.get('option_values', {})
 
@@ -90,8 +90,12 @@ def get_question_answers(poll, responses, config):
 
             # Otherwise slugify the option text from the textizen poll
             else:
-                question = [q for q in questions if q['id'] == question_id][0]
-                option = [o for o in question['options'] if o['id'] == option_id][0]
+                question = [q['open_question']
+                    for q in questions
+                    if q['open_question']['id'] == question_id][0]
+                option = [o['option']
+                    for o in question['options']
+                    if o['option']['id'] == option_id][0]
                 value = slugify(option['text'])
         else:
             # For free-response, use the whole response
