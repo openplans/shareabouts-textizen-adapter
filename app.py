@@ -44,7 +44,7 @@ def hook(request):
     # NOTE: We may end up with a KeyError, but Sentry will catch it.
     textizen_responses = json.loads(request.POST['responses'])
 
-    survey_data = {}
+    survey_data = {'source': 'textizen'}
     survey_data.update(get_general_info(textizen_responses))
     survey_data.update(get_question_answers(textizen_responses, config))
 
