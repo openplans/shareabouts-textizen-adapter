@@ -1,20 +1,26 @@
 {
 	"question_attrs": {
-		"841": "submitter_race",
-		"842": "submitter_age",
-		"843": "comments",
-		"844": "why_good",
-		"845": "submitter_gender",
-		"846": "good_spot",
-		"847": "user_token",
-		"848": "safety",
-		"849": "why_bad",
-		"850": "medallion_number"
+		"1839": "medallion_number",
+		"1840": "good_spot",
+		"1841": "why_good",
+		"1842": "why_bad",
+		"1843": "safety",
+		"1844": "comments",
+		"1845": "submitter_age",
+		"1846": "submitter_gender",
+		"1847": "submitter_race"
 	},
 	"option_values": {
-		"1001": "yes",
-		"1002": "no",
-		"1003": "white"
+		"2982": "live",
+		"2983": "transit",
+		"2984": "work",
+		"2985": "useful",
+		"2986": "other",
+
+		"2987": "nouse",
+		"2988": "intheway",
+		"2989": "unsafe",
+		"2990": "other"
 	},
 	"place_lookup": "medallion_number",
 	"submission_set_name": "surveys"
