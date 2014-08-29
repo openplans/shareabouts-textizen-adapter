@@ -148,7 +148,8 @@ def submit_survey(place, survey_data, config):
             data=json.dumps(survey_data),
             headers={
                 'Content-type': 'application/json',
-                'Authorization': 'Bearer ' + settings.ACCESS_TOKEN
+                'Authorization': 'Bearer ' + settings.ACCESS_TOKEN,
+                'X-Shareabouts-silent': 'true'
             })
 
         if response.status_code == 201:
