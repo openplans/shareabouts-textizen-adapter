@@ -52,9 +52,9 @@ def hook(request):
 
     # Send the survey response to Shareabouts
     place = find_survey_place(survey_data, config)
-    submit_survey(place, survey_data, config)
+    if place: submit_survey(place, survey_data, config)
 
-    return HttpResponse('Powered by Django')
+    return HttpResponse('submitted survey')
 
 def get_general_info(responses):
     """
@@ -109,7 +109,11 @@ def find_survey_place(survey_data, config):
     Look up the surveyed place from the Shareabouts dataset
     """
     lookup_field = config['place_lookup']
-    lookup_value = survey_data[lookup_field]
+    lookup_value = survey_data.get(lookup_field, None)
+
+    # If there's no lookup value then we can't get a corresponding place
+    if lookup_value is None:
+        return None
 
     retries = 2
     while retries > 0:
@@ -131,6 +135,9 @@ def find_survey_place(survey_data, config):
         raise Exception('Too many retries while trying to find survey place')
 
     places = response.json()
+    if len(places['features']) == 0:
+        return None
+
     # If we have more than one place, we should panic
     assert(len(places['features']) == 1)
     return places['features'][0]
