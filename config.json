@@ -1,26 +1,57 @@
 {
 	"question_attrs": {
-		"1839": "medallion_number",
-		"1840": "good_spot",
-		"1841": "why_good",
-		"1842": "why_bad",
-		"1843": "safety",
-		"1844": "comments",
-		"1845": "submitter_age",
-		"1846": "submitter_gender",
-		"1847": "submitter_race"
+		"1790": "medallion_number",
+		"1869": "private-good_spot",
+		"1873": "private-why_bad",
+		"1874": "private-why_good",
+		"1794": "private-safety",
+
+		"1864": "private-alt_spot",
+		"1865": "private-alt_suggestion",
+		"1795": "private-submitter_age",
+		"1796": "private-submitter_gender",
+		"1797": "private-submitter_race",
+		"1875": "private-other"
 	},
 	"option_values": {
-		"2982": "live",
-		"2983": "transit",
-		"2984": "work",
-		"2985": "useful",
-		"2986": "other",
+		"3058": "no",
+		"3057": "yes",
 
-		"2987": "nouse",
-		"2988": "intheway",
-		"2989": "unsafe",
-		"2990": "other"
+		"3074": "other",
+		"3073": "nouse",
+		"3072": "unsafe",
+		"3071": "intheway",
+		"3070": "nousebikeshare",
+
+		"3080": "other",
+		"3079": "community",
+		"3078": "shopping",
+		"3077": "job",
+		"3076": "transit",
+		"3075": "live",
+
+		"3040": "veryuncomfortable",
+		"2864": "uncomfortable",
+		"2863": "neutral",
+		"2862": "comfortable",
+		"2861": "verycomfortable",
+
+		"3042": "no",
+		"3041": "yes",
+
+		"2867": "o",
+		"2866": "f",
+		"2865": "m",
+
+		"2873": "other",
+		"2872": "asian",
+		"2871": "nativeamerican",
+		"2870": "white",
+		"2869": "black",
+		"2868": "latino",
+
+		"3082": "no",
+		"3081": "yes"
 	},
 	"place_lookup": "medallion_number",
 	"submission_set_name": "surveys"
