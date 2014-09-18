@@ -11,7 +11,8 @@
 		"1795": "private-submitter_age",
 		"1796": "private-submitter_gender",
 		"1797": "private-submitter_race",
-		"1875": "private-other"
+		"1875": "private-other",
+		"1876": "private-comments"
 	},
 	"option_values": {
 		"3058": "no",
