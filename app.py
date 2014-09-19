@@ -115,6 +115,14 @@ def find_survey_place(survey_data, config):
     if lookup_value is None:
         return None
 
+    # Trim off any extraneous characters
+    import re
+    pattern = r'\s*(?:#|[Nn]o\.?|[Nn]umber)\s*(\d+)\s*'
+    match = re.match(pattern, lookup_value)
+    if match is None:
+        return None
+    lookup_value = match.group(1)
+
     retries = 2
     while retries > 0:
         dataset_root = (
