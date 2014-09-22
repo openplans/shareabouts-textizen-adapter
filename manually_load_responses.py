@@ -13,6 +13,8 @@ with open('poll_info.json') as poll_info_file:
 
 # Pairs of medallion # (string), phone number (string)
 seen_responses = set([
+    # ('21', '+12679705555'),
+    # ...
 ])
 
 count = 0
