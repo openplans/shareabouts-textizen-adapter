@@ -79,7 +79,13 @@ def get_question_answers(poll, responses, config):
 
     for response in responses:
         question_id = response['question_id']
-        option_id = response['matching_option_id']
+
+        if 'matching_option_id' in response:
+            option_id = response['matching_option_id']
+        elif 'match' in response and 'id' in response['match']:
+            option_id = response['match']['id']
+        else:
+            option_id = None
 
         # NOTE: These may raise a KeyError, but Sentry will catch it.
         attr = question_attrs[str(question_id)]
