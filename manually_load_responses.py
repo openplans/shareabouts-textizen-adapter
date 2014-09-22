@@ -2,7 +2,7 @@
 
 import json
 import hashlib
-from app import get_general_info, get_question_answers, find_survey_place, submit_survey
+from app import get_question_answers, find_survey_place, submit_survey
 from django.conf import settings
 
 with open('config.json') as configfile:
