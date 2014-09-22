@@ -117,7 +117,7 @@ def find_survey_place(survey_data, config):
 
     # Trim off any extraneous characters
     import re
-    pattern = r'\s*(?:#|[Nn]o\.?|[Nn]umber)?\s*(\d+)\s*'
+    pattern = r'^[^\w]*(?:#|[Nn]o\.?|[Nn]umber)?\s*(\d+)[^\w]*$'
     match = re.match(pattern, lookup_value)
     if match is None:
         return None
