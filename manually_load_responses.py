@@ -5,11 +5,20 @@ import hashlib
 from app import get_question_answers, find_survey_place, submit_survey
 from django.conf import settings
 
+# The config.json file should be the same file that is used to configure the
+# Textizen adapter for automatic importing.
 with open('config.json') as configfile:
     config = json.load(configfile)
 
-with open('poll_info.json') as poll_info_file:
-    textizen_poll = json.load(poll_info_file)
+# The poll_info.json file is the result of downloading the poll from the
+# Textizen API.
+with open('poll_info.json') as textizen_poll_info_file:
+    textizen_poll = json.load(textizen_poll_info_file)
+
+# The surveys.json file is the result of downloading the places from the
+# Shareabouts API with include_submissions and include_private enabled.
+with open('surveys.json') as shareabouts_surveys_file:
+    shareabouts_surveys = json.load(shareabouts_surveys_file)
 
 # Pairs of medallion # (string), phone number (string)
 seen_responses = set([
@@ -17,6 +26,27 @@ seen_responses = set([
     # ...
 ])
 
+# Update the seen_responses set with data from the Shareabouts API.
+for place_data in shareabouts_surveys['features']:
+    try: medallion_number = str(place_data['properties']['medallion_number'])
+    except KeyError:
+        print('Skipping place {url}, which has no medallion_number.'.format(**place_data['properties']))
+        continue
+
+    for survey_data in place_data['properties']['submission_sets']['surveys']:
+        source = survey_data.get('source', 'shareabouts')
+        try:
+            user_token = survey_data['user_token']
+        except KeyError:
+            print('Oddly, survey {url} has no user_token.'.format(**survey_data))
+            continue
+
+        if source.lower() == 'textizen' or user_token.lower().startswith('textizen'):
+            phone_number = str(survey_data['private_participant_phone'])
+            print('Adding ("{}", "{}") to the seen responses.'.format(medallion_number, phone_number))
+            seen_responses.add((medallion_number, phone_number))
+
+# Upload the new Textizen responses to Shareabouts.
 count = 0
 for textizen_session in textizen_poll['response_sequences']:
     textizen_responses = textizen_session['responses']
